@@ -1,0 +1,23 @@
+#+title: README
+
+* Description
+A mouse jiggler every 60 seconds to move the mouse 1 pixel back and forth to prevent screen lock
+
+* Build
+
+#+begin_example fish
+set -x PICO_SDK_PATH /path/to/pico-sdk
+cp $PICO_SDK_PATH/external/pico_sdk_import.cmake .
+
+cmake -B build
+cd build
+make
+#+end_example
+
+** Installation
+
+Put pico into DFU mode first then copy firmware
+
+#+begin_example fish
+cp pico_mouse_jiggler.uf2 /path/to/RPI-RP2/
+#+end_example
