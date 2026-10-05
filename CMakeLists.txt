@@ -11,10 +11,13 @@ add_executable(pico_mouse_jiggler
     usb_descriptors.c
 )
 
+# this is the assembly code from - https://github.com/raspberrypi/pico-examples/blob/master/pio/ws2812/ws2812.pio
+pico_generate_pio_header(pico_mouse_jiggler ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio) 
+
 target_include_directories(pico_mouse_jiggler PUBLIC
         ${CMAKE_CURRENT_LIST_DIR})
 
-target_link_libraries(pico_mouse_jiggler pico_stdlib pico_unique_id tinyusb_device tinyusb_board)
+target_link_libraries(pico_mouse_jiggler pico_stdlib pico_unique_id tinyusb_device tinyusb_board hardware_pio)
 
 # enable usb
 pico_enable_stdio_usb(pico_mouse_jiggler 0)
