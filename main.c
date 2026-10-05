@@ -45,13 +45,10 @@ void led_blink_task(void) {
     if (led_state) {
       if (led_control & 0x04) {
         set_neopixel_color(255, 0, 0); // Red on
-        led_control = (led_control & ~(1U << 2)) | (1U << 3);
       } else if (led_control & 0x08) {
         set_neopixel_color(0, 255, 0); // Green on
-        led_control = (led_control & ~(1U << 3)) | (1U << 4);
       } else if (led_control & 0x10) {
         set_neopixel_color(0, 0, 255); // Blue on
-        led_control = (led_control & ~(1U << 4)) | (1U << 2);
       }
     } else {
       set_neopixel_color(0, 0, 0); // off
@@ -85,6 +82,15 @@ void mouse_jiggle_task(void) {
 
   // toggle direction for the next run
   direction = !direction;
+
+  // change the led color
+  if (led_control & 0x04) {
+    led_control = (led_control & ~(1U << 2)) | (1U << 3); // red to green
+  } else if (led_control & 0x08) {
+    led_control = (led_control & ~(1U << 3)) | (1U << 4); // green to blue
+  } else if (led_control & 0x10) {
+    led_control = (led_control & ~(1U << 4)) | (1U << 2); // blue to red
+  }
 }
 
 /*
