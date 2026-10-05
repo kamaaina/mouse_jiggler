@@ -16,4 +16,17 @@
 /* HID Report Descriptor Buffer Size */
 #define CFG_TUD_HID_EP_BUFSIZE      16
 
+// --- for serial debugging below
+// FIXME: this should be enabled for debug builds only
+
+// Enable Device CDC driver
+#define CFG_TUD_CDC                 1
+
+// RX and TX internal FIFO buffer sizes (usually 64 for Full-Speed USB, 512 for High-Speed)
+#define CFG_TUD_CDC_RX_BUFSIZE      64
+#define CFG_TUD_CDC_TX_BUFSIZE      64
+
+// Endpoint transfer buffer size (sets the max packet size for the physical hardware)
+#define CFG_TUD_CDC_EP_BUFSIZE      64
+
 #endif

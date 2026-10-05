@@ -21,3 +21,11 @@ Put pico into DFU mode first then copy firmware
 #+begin_example fish
 cp pico_mouse_jiggler.uf2 /path/to/RPI-RP2/
 #+end_example
+
+* Serial
+
+use minicom to connect and see output. to exit, ctrl-t q
+
+#+begin_example fish
+tio /dev/ttyACM0
+#+end_example

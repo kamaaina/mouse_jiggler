@@ -20,7 +20,7 @@ target_include_directories(pico_mouse_jiggler PUBLIC
 target_link_libraries(pico_mouse_jiggler pico_stdlib pico_unique_id tinyusb_device tinyusb_board hardware_pio)
 
 # enable usb
-pico_enable_stdio_usb(pico_mouse_jiggler 0)
+pico_enable_stdio_usb(pico_mouse_jiggler 1)
 
 #disable uart
 pico_enable_stdio_uart(pico_mouse_jiggler 0)

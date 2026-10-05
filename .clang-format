@@ -1,0 +1,13 @@
+BasedOnStyle: llvm
+IndentWidth: 4
+##AllowShortFunctionsOnASingleLine: None
+#KeepEmptyLinesAtTheStartOfBlocks: false
+BreakBeforeBraces: Allman
+
+ColumnLimit: 90
+PointerAlignment: Left
+
+AlignConsecutiveAssignments:
+   Enabled: true
+   AcrossEmptyLines: false
+   AcrossComments: true

@@ -9,88 +9,112 @@
 #define LED_PIN 16
 #define BLINK_INTERVAL_MS 500 // blink speed (500ms ON, 500ms OFF)
 
-static bool led_state = false;
-static uint32_t last_blink_time = 0;
-
 // globals
-bool enabled = true;
-bool left_right = true;
-uint16_t duration_sec = 60;
-uint16_t pixels = 1;
-uint8_t targeted_workspace = 7;
-uint8_t led_control = 0;
+bool enabled                    = true;
+bool left_right                 = true;
+uint16_t duration_sec           = 60;
+uint16_t pixels                 = 1;
+uint8_t targeted_workspace      = 7;
+uint8_t led_control             = 0;
+static bool led_state           = false;
+static uint32_t last_blink_time = 0;
 
 #define PIO_BLOCK pio0
 #define SM_NUM 0
 
-// Helper to send a 24-bit GRB color to the PIO FIFO queue
-static inline void set_neopixel_color(uint8_t r, uint8_t g, uint8_t b) {
-  // WS2812 expects data in MSB-first format: Green, then Red, then Blue
-  uint32_t grb_color =
-      ((uint32_t)(g) << 16) | ((uint32_t)(r) << 8) | ((uint32_t)(b));
+// helper to send a 24-bit GRB color to the PIO FIFO queue
+static inline void set_neopixel_color(uint8_t r, uint8_t g, uint8_t b)
+{
+    // WS2812 expects data in MSB-first format: Green, then Red, then Blue
+    uint32_t grb_color = ((uint32_t)(g) << 16) | ((uint32_t)(r) << 8) | ((uint32_t)(b));
 
-  // Shift up to the top 24 bits because the PIO program reads from the MSB side
-  pio_sm_put_blocking(PIO_BLOCK, SM_NUM, grb_color << 8u);
+    // shift up to the top 24 bits because the PIO program reads from the MSB side
+    pio_sm_put_blocking(PIO_BLOCK, SM_NUM, grb_color << 8u);
 }
 
-// Handles the non-blocking blink timing
-void led_blink_task(void) {
-  uint32_t current_time = to_ms_since_boot(get_absolute_time());
+// handles the non-blocking blink timing
+void led_blink_task(void)
+{
+    uint32_t current_time = to_ms_since_boot(get_absolute_time());
 
-  // Check if enough time has passed
-  if (current_time - last_blink_time >= BLINK_INTERVAL_MS) {
-    last_blink_time = current_time;
-    led_state = !led_state; // Toggle the state
+    // check if enough time has passed
+    if (current_time - last_blink_time >= BLINK_INTERVAL_MS)
+    {
+        last_blink_time = current_time;
+        led_state       = !led_state; // toggle the state
 
-    if (led_state) {
-      if (led_control & 0x04) {
-        set_neopixel_color(255, 0, 0); // Red on
-      } else if (led_control & 0x08) {
-        set_neopixel_color(0, 255, 0); // Green on
-      } else if (led_control & 0x10) {
-        set_neopixel_color(0, 0, 255); // Blue on
-      }
-    } else {
-      set_neopixel_color(0, 0, 0); // off
+        if (led_state)
+        {
+            if (led_control & 0x04)
+            {
+                set_neopixel_color(255, 0, 0); // Red on
+            }
+            else if (led_control & 0x08)
+            {
+                set_neopixel_color(0, 255, 0); // Green on
+            }
+            else if (led_control & 0x10)
+            {
+                set_neopixel_color(0, 0, 255); // Blue on
+            }
+        }
+        else
+        {
+            set_neopixel_color(0, 0, 0); // off
+        }
     }
-  }
 }
 
-void mouse_jiggle_task(void) {
-  static uint32_t start_ms = 0;
-  static bool direction = false;
+void mouse_jiggle_task(void)
+{
+    static uint32_t start_ms = 0;
+    static bool direction    = false;
 
-  // check if the USB host is ready and configured
-  if (!tud_hid_ready())
-    return;
+    // check if the USB host is ready and configured
+    if (!tud_hid_ready())
+        return;
 
-  uint32_t current_time_ms = to_ms_since_boot(get_absolute_time());
+    uint32_t current_time_ms = to_ms_since_boot(get_absolute_time());
 
-  // move mouse run when interval expires
-  if (current_time_ms - start_ms < JIGGLE_INTERVAL_MS)
-    return;
+    // move mouse run when interval expires
+    if (current_time_ms - start_ms < JIGGLE_INTERVAL_MS)
+        return;
 
-  start_ms = current_time_ms;
+    start_ms = current_time_ms;
 
-  if (direction) {
-    // right 1 pixel
-    tud_hid_mouse_report(1, 0, 10, 0, 0, 0);
-  } else {
-    // left 1 pixel
-    tud_hid_mouse_report(1, 0, -10, 0, 0, 0);
-  }
+    if (direction)
+    {
+        // right 1 pixel
+        tud_hid_mouse_report(1, 0, 1, 0, 0, 0);
+    }
+    else
+    {
+        // left 1 pixel
+        tud_hid_mouse_report(1, 0, -1, 0, 0, 0);
+    }
 
-  // toggle direction for the next run
-  direction = !direction;
+    // toggle direction for the next run
+    direction = !direction;
 
-  // change the led color
-  if (led_control & 0x04) {
-    led_control = (led_control & ~(1U << 2)) | (1U << 3); // red to green
-  } else if (led_control & 0x08) {
-    led_control = (led_control & ~(1U << 3)) | (1U << 4); // green to blue
-  } else if (led_control & 0x10) {
-    led_control = (led_control & ~(1U << 4)) | (1U << 2); // blue to red
-  }
+    // change the led color
+    if (led_control & 0x04)
+    {
+        led_control = (led_control & ~(1U << 2)) | (1U << 3); // red to green
+    }
+    else if (led_control & 0x08)
+    {
+        led_control = (led_control & ~(1U << 3)) | (1U << 4); // green to blue
+    }
+    else if (led_control & 0x10)
+    {
+        led_control = (led_control & ~(1U << 4)) | (1U << 2); // blue to red
+    }
+
+    if (tud_cdc_connected())
+    {
+        tud_cdc_write_str("mouse jiggled!\r\n");
+        tud_cdc_write_flush(); // Ensure it sends immediately
+    }
 }
 
 /*
@@ -99,23 +123,25 @@ void tud_mount_cb() {
 }
 */
 
-int main(void) {
-  stdio_init_all();
+int main(void)
+{
+    stdio_init_all();
 
-  uint offset = pio_add_program(PIO_BLOCK, &ws2812_program);
-  ws2812_program_init(PIO_BLOCK, SM_NUM, offset, LED_PIN, 800000, false);
+    uint offset = pio_add_program(PIO_BLOCK, &ws2812_program);
+    ws2812_program_init(PIO_BLOCK, SM_NUM, offset, LED_PIN, 800000, false);
 
-  set_neopixel_color(0, 0, 0);
+    set_neopixel_color(0, 0, 0);
 
-  tusb_init();
+    tusb_init();
 
-  led_control = 0x04;
+    led_control = 0x04;
 
-  while (1) {
-    tud_task(); // TinyUSB device task
-    mouse_jiggle_task();
-    led_blink_task();
-  }
+    while (1)
+    {
+        tud_task(); // TinyUSB device task
+        mouse_jiggle_task();
+        led_blink_task();
+    }
 }
 
 /*
@@ -133,31 +159,29 @@ void tud_cdc_rx_cb(uint8_t itf) {
 }
 */
 
-/*
 // callback when device is mounted and connected
-void tud_mount_cb() {
-   gpio_put(LED_PIN, 1);
-}
-*/
+void tud_mount_cb() { set_neopixel_color(0, 0, 0); }
 
 // Required TinyUSB callbacks
 uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id,
-                               hid_report_type_t report_type, uint8_t *buffer,
-                               uint16_t reqlen) {
-  (void)instance;
-  (void)report_id;
-  (void)report_type;
-  (void)buffer;
-  (void)reqlen;
-  return 0;
+                               hid_report_type_t report_type, uint8_t* buffer,
+                               uint16_t reqlen)
+{
+    (void)instance;
+    (void)report_id;
+    (void)report_type;
+    (void)buffer;
+    (void)reqlen;
+    return 0;
 }
 
 void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id,
-                           hid_report_type_t report_type, uint8_t const *buffer,
-                           uint16_t bufsize) {
-  (void)instance;
-  (void)report_id;
-  (void)report_type;
-  (void)buffer;
-  (void)bufsize;
+                           hid_report_type_t report_type, uint8_t const* buffer,
+                           uint16_t bufsize)
+{
+    (void)instance;
+    (void)report_id;
+    (void)report_type;
+    (void)buffer;
+    (void)bufsize;
 }
