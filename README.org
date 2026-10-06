@@ -24,7 +24,8 @@ cp pico_mouse_jiggler.uf2 /path/to/RPI-RP2/
 
 * Serial
 
-use minicom to connect and see output. to exit, ctrl-t q
+use tio to connect and see output. to exit, ctrl-t q
+paru -S tio
 
 #+begin_example fish
 tio /dev/ttyACM0
