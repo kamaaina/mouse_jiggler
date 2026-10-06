@@ -4,6 +4,9 @@ include(pico_sdk_import.cmake)
 
 project(pico_mouse_jiggler)
 
+# comment out for pico as it is the default
+set(PICO_BOARD waveshare_rp2040_zero)
+
 pico_sdk_init()
 
 add_executable(pico_mouse_jiggler
