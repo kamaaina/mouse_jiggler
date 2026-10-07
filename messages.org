@@ -1,0 +1,32 @@
+#+title: Messages
+
+* Messages
+
+** GET_CONFIGURATION
+
+Message that is returned when host asks device for configuration
+
+| byte | field        | type   | description                        |
+|------+--------------+--------+------------------------------------|
+|    0 | message type | uint8  | bit0 - configuration message       |
+|      |              |        | bit1 - update configuration        |
+|      |              |        | bit2 - ?                           |
+|    1 | start/stop   | uint8  | bit 0 - start/stop                 |
+|    2 | direction    | uint8  | bit 0 - left/right                 |
+|      |              |        | bit 1 - top/bottom                 |
+|  3-4 | duration     | uint16 | time in seconds before next jiggle |
+|  5-6 | movement     | uint16 | number of pixes to move the mouse  |
+|    7 | workspace    | uint8  | workspace number                   |
+|    8 | led          | uint8  | bit 0 - on/off                     |
+|      |              |        | bit 1 - red                        |
+|      |              |        | bit 2 - green                      |
+|      |              |        | bit 3 - blue                       |
+
+
+** UPDATE_CONFIGURATION
+
+Message to update the configuration
+
+| byte | field        | type   | description                        |
+|------+--------------+--------+------------------------------------|
+|    0 | message type | uint8  | bit0 - configuration message       |
