@@ -8,16 +8,22 @@ Message that is returned when host asks device for configuration
 
 | byte | field        | type   | description                        |
 |------+--------------+--------+------------------------------------|
-|    0 | message type | uint8  | bit0 - configuration message       |
-|      |              |        | bit1 - update configuration        |
-|      |              |        | bit2 - ?                           |
-|    1 | start/stop   | uint8  | bit 0 - start/stop                 |
-|    2 | direction    | uint8  | bit 0 - left/right                 |
+|    0 | message type | uint8  | type of message                    |
+|      |              |        | bit 0 - configuration message      |
+|      |              |        | bit 1 - update configuration       |
+|      |              |        | bit 2 - update keyboard string     |
+|      |              |        | bit 3 - send keyboard message      |
+|      |              |        | bit 4 - send mouse message         |
+|    1 | start/stop   | uint8  | state of mouse_jiggler             |
+|      |              |        | bit 0 - start/stop                 |
+|    2 | direction    | uint8  | direction to move mouse            |
+|      |              |        | bit 0 - left/right                 |
 |      |              |        | bit 1 - top/bottom                 |
 |  3-4 | duration     | uint16 | time in seconds before next jiggle |
 |  5-6 | movement     | uint16 | number of pixes to move the mouse  |
 |    7 | workspace    | uint8  | workspace number                   |
-|    8 | led          | uint8  | bit 0 - on/off                     |
+|    8 | led          | uint8  | led state and color                |
+|      |              |        | bit 0 - on/off                     |
 |      |              |        | bit 1 - red                        |
 |      |              |        | bit 2 - green                      |
 |      |              |        | bit 3 - blue                       |
@@ -27,6 +33,16 @@ Message that is returned when host asks device for configuration
 
 Message to update the configuration
 
-| byte | field        | type   | description                        |
-|------+--------------+--------+------------------------------------|
-|    0 | message type | uint8  | bit0 - configuration message       |
+| byte | field        | type  | description |
+|------+--------------+-------+-------------|
+|    0 | message type | uint8 |        0x01 |
+|      |              |       |             |
+
+** JIGGLE
+
+Message to jiggle mouse or send keyboard keys
+
+| byte | field        | type  | description                         |
+|------+--------------+-------+-------------------------------------|
+|    0 | message type | uint8 | 0x08 for keyboard or 0x10 for mouse |
+|      |              |       |                                     |
