@@ -2,72 +2,65 @@
 
 * Messages
 
-** GET_CONFIGURATION
+All messages should be 64 bytes long. Pad with 0's to ensure size constraints
+
+** CONFIGURATION
 
 Message that is returned when host asks device for configuration
 
-| byte | field        | type   | description                        |
-|------+--------------+--------+------------------------------------|
-|    0 | message type | uint8  | type of message                    |
-|      |              |        | bit 0 - configuration message      |
-|      |              |        | bit 1 - update configuration       |
-|      |              |        | bit 2 - update keyboard string     |
-|      |              |        | bit 3 - send keyboard message      |
-|      |              |        | bit 4 - send mouse message         |
-|      |              |        |                                    |
-|  1-2 | update field | uint16 | bit 0 - start/stop                 |
-|      |              |        | bit 1 - direction                  |
-|      |              |        | bit 2 - duration                   |
-|      |              |        | bit 3 - movement                   |
-|      |              |        | bit 4 - workspace                  |
-|      |              |        | bit 5 - led                        |
-|      |              |        |                                    |
-|    3 | start/stop   | uint8  | state of mouse_jiggler             |
-|      |              |        | bit 0 - start/stop                 |
-|      |              |        |                                    |
-|    4 | direction    | uint8  | direction to move mouse            |
-|      |              |        | bit 0 - left/right                 |
-|      |              |        | bit 1 - top/bottom                 |
-|      |              |        |                                    |
-|  5-6 | duration     | uint16 | time in seconds before next jiggle |
-|      |              |        |                                    |
-|  7-8 | movement     | uint16 | number of pixes to move the mouse  |
-|      |              |        |                                    |
-|    9 | workspace    | uint8  | workspace number                   |
-|      |              |        |                                    |
-|   10 | led          | uint8  | led state and color                |
-|      |              |        | bit 0 - on/off                     |
-|      |              |        | bit 1 - red                        |
-|      |              |        | bit 2 - green                      |
-|      |              |        | bit 3 - blue                       |
-|      |              |        |                                    |
+| byte | field          | type   | description                        |
+|------+----------------+--------+------------------------------------|
+|    0 | report id      | uint8  | 0x03                               |
+|      |                |        |                                    |
+|    1 | message type   | uint8  | type of message                    |
+|      |                |        | 0xCF - get configuration message   |
+|      |                |        | 0x11 - update configuration        |
+|      |                |        | 0x12 - send keyboard message       |
+|      |                |        | 0x13 - send mouse message          |
+|      |                |        |                                    |
+|  2-3 | updating field | uint16 | bit 0 - start/stop                 |
+|      |                |        | bit 1 - direction                  |
+|      |                |        | bit 2 - duration                   |
+|      |                |        | bit 3 - movement                   |
+|      |                |        | bit 4 - workspace                  |
+|      |                |        | bit 5 - led                        |
+|      |                |        | bit 6 - message string             |
+|      |                |        | bit 7-14 - RESERVED                |
+|      |                |        | bit 15 - ignore                    |
+|      |                |        |                                    |
+|    4 | start/stop     | uint8  | state of mouse_jiggler             |
+|      |                |        | bit 0 - start/stop                 |
+|      |                |        | bit 1 - led on/off                 |
+|      |                |        | bit 2 - RESERVED                   |
+|      |                |        | bit 3 - RESERVED                   |
+|      |                |        | bits 4-7 (high order) - workspace  |
+|      |                |        |                                    |
+|    5 | direction      | uint8  | direction to move mouse            |
+|      |                |        | bit 0 - left/right                 |
+|      |                |        | bit 1 - top/bottom                 |
+|      |                |        |                                    |
+|  6-7 | duration       | uint16 | time in seconds before next jiggle |
+|      |                |        |                                    |
+|  8-9 | movement       | uint16 | number of pixes to move the mouse  |
+|      |                |        |                                    |
+|   10 | red value      | uint8  | value for red                      |
+|      |                |        |                                    |
+|   11 | green value    | uint8  | value for green                    |
+|      |                |        |                                    |
+|   12 | blue value     | uint8  | value for blue                     |
+|      |                |        |                                    |
+|   13 | msg size       | uint8  | size of keyboard message (max 31)  |
+|      |                |        |                                    |
+| 14-n | message        | n/a    | message                            |
+|      |                |        |                                    |
 
-
-** UPDATE_CONFIGURATION
-
-Message to update the configuration
-
-| byte | field                   | type   | description |
-|------+-------------------------+--------+-------------|
-|    0 | message type            | uint8  |        0x01 |
-|  1-2 | update field            | uint16 |             |
-|    x | the field being updated |        |             |
 
 ** JIGGLE
 
-Message to jiggle mouse or send keyboard keys instead of having to wait for the timeout to hit
+Message to override timeout and force a mouse jiggle or send keyboard keys instead of having to wait for the timeout to hit
 
 | byte | field        | type  | description                         |
 |------+--------------+-------+-------------------------------------|
-|    0 | message type | uint8 | 0x08 for keyboard or 0x10 for mouse |
+|    0 | message type | uint8 | 0x12 for keyboard or 0x13 for mouse |
 |      |              |       |                                     |
 
-** UPDATE_MESSAGE
-
-Sent to the device to update the message they keyboard sends. Max size is 32 characters
-
-| byte | field        | type  | description    |
-|------+--------------+-------+----------------|
-|    0 | message type | uint8 | 0x04           |
-|    1 | size         | uint8 | size of string |
-| 2..n | char array   | uint8 | the new string |
