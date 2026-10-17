@@ -18,7 +18,7 @@ Message that is returned when host asks device for configuration
 |      |                |        | 0x12 - send keyboard message       |
 |      |                |        | 0x13 - send mouse message          |
 |      |                |        |                                    |
-|  2-3 | updating field | uint16 | bit 0 - start/stop                 |
+|  2-3 | updating field | uint16 | bit 0 - state machine              |
 |      |                |        | bit 1 - direction                  |
 |      |                |        | bit 2 - duration                   |
 |      |                |        | bit 3 - movement                   |
@@ -28,8 +28,8 @@ Message that is returned when host asks device for configuration
 |      |                |        | bit 7-14 - RESERVED                |
 |      |                |        | bit 15 - ignore                    |
 |      |                |        |                                    |
-|    4 | start/stop     | uint8  | state of mouse_jiggler             |
-|      |                |        | bit 0 - start/stop                 |
+|    4 | state machine  | uint8  | state of things                    |
+|      |                |        | bit 0 - mouse jiggler start/stop   |
 |      |                |        | bit 1 - led on/off                 |
 |      |                |        | bit 2 - RESERVED                   |
 |      |                |        | bit 3 - RESERVED                   |
@@ -55,7 +55,7 @@ Message that is returned when host asks device for configuration
 |      |                |        |                                    |
 
 
-** JIGGLE
+** TRIGGER
 
 Message to override timeout and force a mouse jiggle or send keyboard keys instead of having to wait for the timeout to hit
 
