@@ -8,51 +8,64 @@ All messages should be 64 bytes long. Pad with 0's to ensure size constraints
 
 Message that is returned when host asks device for configuration
 
-| byte | field          | type   | description                        |
-|------+----------------+--------+------------------------------------|
-|    0 | report id      | uint8  | 0x03                               |
-|      |                |        |                                    |
-|    1 | message type   | uint8  | type of message                    |
-|      |                |        | 0xCF - get configuration message   |
-|      |                |        | 0x11 - update configuration        |
-|      |                |        | 0x12 - send keyboard message       |
-|      |                |        | 0x13 - send mouse message          |
-|      |                |        |                                    |
-|  2-3 | updating field | uint16 | bit 0 - state machine              |
-|      |                |        | bit 1 - direction                  |
-|      |                |        | bit 2 - duration                   |
-|      |                |        | bit 3 - movement                   |
-|      |                |        | bit 4 - workspace                  |
-|      |                |        | bit 5 - led                        |
-|      |                |        | bit 6 - message string             |
-|      |                |        | bit 7-14 - RESERVED                |
-|      |                |        | bit 15 - ignore                    |
-|      |                |        |                                    |
-|    4 | state machine  | uint8  | state of things                    |
-|      |                |        | bit 0 - mouse jiggler start/stop   |
-|      |                |        | bit 1 - led on/off                 |
-|      |                |        | bit 2 - RESERVED                   |
-|      |                |        | bit 3 - RESERVED                   |
-|      |                |        | bits 4-7 (high order) - workspace  |
-|      |                |        |                                    |
-|    5 | direction      | uint8  | direction to move mouse            |
-|      |                |        | bit 0 - left/right                 |
-|      |                |        | bit 1 - top/bottom                 |
-|      |                |        |                                    |
-|  6-7 | duration       | uint16 | time in seconds before next jiggle |
-|      |                |        |                                    |
-|  8-9 | movement       | uint16 | number of pixes to move the mouse  |
-|      |                |        |                                    |
-|   10 | red value      | uint8  | value for red                      |
-|      |                |        |                                    |
-|   11 | green value    | uint8  | value for green                    |
-|      |                |        |                                    |
-|   12 | blue value     | uint8  | value for blue                     |
-|      |                |        |                                    |
-|   13 | msg size       | uint8  | size of keyboard message (max 31)  |
-|      |                |        |                                    |
-| 14-n | message        | n/a    | message                            |
-|      |                |        |                                    |
+|  byte | field          | type    | description                        |
+|-------+----------------+---------+------------------------------------|
+|     0 | report id      | uint8   | 0x03                               |
+|       |                |         |                                    |
+|     1 | message type   | uint8   | type of message                    |
+|       |                |         | 0xCF - get configuration message   |
+|       |                |         | 0x11 - update configuration        |
+|       |                |         | 0x12 - send keyboard message       |
+|       |                |         | 0x13 - send mouse message          |
+|       |                |         |                                    |
+|   2-3 | updating field | uint16  | bit 0 - state machine              |
+|       |                |         | bit 1 - direction                  |
+|       |                |         | bit 2 - duration                   |
+|       |                |         | bit 3 - movement                   |
+|       |                |         | bit 4 - workspace                  |
+|       |                |         | bit 5 - led                        |
+|       |                |         | bit 6 - message string             |
+|       |                |         | bit 7-14 - RESERVED                |
+|       |                |         | bit 15 - ignore                    |
+|       |                |         |                                    |
+|     4 | state machine  | uint8   | state of things                    |
+|       |                |         | bit 0 - mouse jiggler start/stop   |
+|       |                |         | bit 1 - led on/off                 |
+|       |                |         | bit 2 - RESERVED                   |
+|       |                |         | bit 3 - RESERVED                   |
+|       |                |         | bits 4-7 (high order) - workspace  |
+|       |                |         |                                    |
+|     5 | direction      | uint8   | direction to move mouse            |
+|       |                |         | bit 0 - left/right                 |
+|       |                |         | bit 1 - top/bottom                 |
+|       |                |         |                                    |
+|   6-7 | duration       | uint16  | time in seconds before next jiggle |
+|       |                |         |                                    |
+|   8-9 | movement       | uint16  | number of pixes to move the mouse  |
+|       |                |         |                                    |
+|    10 | red value      | uint8   | value for red                      |
+|       |                |         |                                    |
+|    11 | green value    | uint8   | value for green                    |
+|       |                |         |                                    |
+|    12 | blue value     | uint8   | value for blue                     |
+|       |                |         |                                    |
+|    13 | msg size       | uint8   | size of keyboard message (max 31)  |
+|       |                |         |                                    |
+| 14-44 | message        | n/a     | message                            |
+|       |                |         |                                    |
+| 45-48 | flash size     | uint32  | size of flash in bytes             |
+|       |                |         |                                    |
+| 49-56 | chip id        | 8 bytes | hardware id; aka serial number     |
+|       |                |         |                                    |
+|    57 | chip revision  | uint8   | hardware revision of chip          |
+|       |                |         |                                    |
+|    58 | ROM version    | uint8   | ROM version of chip                |
+|       |                |         | B0, B1, or B2 (latest)             |
+|       |                |         |                                    |
+| 59-60 | manufacturer   | uint16  | chip manufacturer                  |
+|       |                |         | 0x927 = raspberry pi               |
+|       |                |         |                                    |
+| 61-62 | FREE           | FREE    | FREE                               |
 
 
 ** TRIGGER
