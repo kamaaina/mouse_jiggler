@@ -65,7 +65,8 @@ Message that is returned when host asks device for configuration
 | 59-60 | manufacturer   | uint16  | chip manufacturer                  |
 |       |                |         | 0x927 = raspberry pi               |
 |       |                |         |                                    |
-| 61-62 | FREE           | FREE    | FREE                               |
+| 61-62 | chip temp      | int16   | temperature of chip in celcius     |
+|       |                |         |                                    |
 
 
 ** TRIGGER
