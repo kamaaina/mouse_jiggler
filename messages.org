@@ -68,6 +68,11 @@ Message that is returned when host asks device for configuration
 | 61-62 | chip temp      | int16   | temperature of chip in celcius     |
 |       |                |         |                                    |
 
+Bits	Meaning	Value for RP2040	Value for RP2350
+31:28	Revision Stepping	0x1 (B1) or 0x2 (B2)	0x1 (A1), 0x2 (A2)
+27:12	Part Number	0x0002	0x0004
+11:1	Manufacturer ID (JEDEC)	0x493 (0x927 >> 1)	0x493 (0x926 >> 1)
+0	Always a Stop Bit	1	1
 
 ** TRIGGER
 
